@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Super_Toolbelt.Editor
 {
@@ -25,9 +27,9 @@ namespace Super_Toolbelt.Editor
         /// </summary>
         private readonly string[] BUTTONS =
         {
+            "Switch To Last Scene",
             "Toggle UI",
             "Toggle Inspector Debug Mode",
-            "Path_to_icon"
         };
 
         private void OnGUI()
@@ -40,6 +42,7 @@ namespace Super_Toolbelt.Editor
             {
                 // Add a button with dynamic size
                 // TODO: Add check for icon path
+                GUI.enabled = IsButtonInteractive(i);
                 if (GUILayout.Button(BUTTONS[i], GUILayout.Width(buttonWidth), GUILayout.Height(position.height)))
                 {
                     int buttonIndex = i;
@@ -51,6 +54,7 @@ namespace Super_Toolbelt.Editor
                     };
                 }
             }
+            Repaint();
             GUILayout.EndHorizontal();
         }
 
@@ -58,13 +62,43 @@ namespace Super_Toolbelt.Editor
         {
             switch (buttonID)
             {
-                case 0: ToggleUI(); break;
-                case 1: ToggleInspectorMode(); break;
+                case 0: SwitchToLastScene(); break;
+                case 1: ToggleUI(); break;
+                case 2: ToggleInspectorMode(); break;
             }
+        }
+
+        private bool IsButtonInteractive(int buttonID)
+        {
+            switch (buttonID)
+            {
+                case 0: return CanSwitchToLastScene();
+                case 1: return CanToggleUI();
+                case 2: return CanToggleInspectorMode();
+            }
+
+            return false;
+        }
+
+        private bool CanToggleUI()
+        {
+            Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            return canvases.Length > 0;
+        }
+
+        private bool CanToggleInspectorMode()
+        {
+            EditorWindow targetInspector = GetActiveInspectorWindow();
+            return targetInspector;
+        }
+
+        private bool CanSwitchToLastScene()
+        {
+            return !String.IsNullOrEmpty(sceneB);
         }
       
         // Buttons logic and functionality
-        #region Button 1: Toggle UI
+        #region Button 2: Toggle UI
         private void ToggleUI()
         {
             Canvas[] canvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -75,7 +109,7 @@ namespace Super_Toolbelt.Editor
         }
         #endregion
         
-        #region Button 2: Toggle Inspector Debug Mode
+        #region Button 3: Toggle Inspector Debug Mode
         private void ToggleInspectorMode()
         {
             EditorWindow targetInspector = GetActiveInspectorWindow();
@@ -111,6 +145,30 @@ namespace Super_Toolbelt.Editor
             }
 
             return null;
+        }
+        #endregion
+
+        #region Button 1: Switch to Last Scene
+        private static string sceneA, sceneB;
+        
+        static SuperToolbeltWindow()
+        {
+            EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
+            Debug.Log("SceneChangeTest initialized");
+        }
+
+        private static void SwitchToLastScene()
+        {
+            EditorSceneManager.OpenScene(sceneB, OpenSceneMode.Single);
+        }
+        
+        private static void OnActiveSceneChanged(Scene oldScene, Scene newScene)
+        {
+            if (newScene.path != sceneA)
+            {
+                sceneB = sceneA;
+                sceneA = newScene.path;
+            }
         }
         #endregion
     }
