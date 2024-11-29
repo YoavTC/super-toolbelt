@@ -19,17 +19,12 @@ namespace Super_Toolbelt.Editor
         }
         #endregion
         
-        /// <summary>
-        /// The buttons list (array, but you get it).
-        /// 
-        /// If the string matches a path for an icon, it will display the icon.
-        /// If not, the button will display it as text instead.
-        /// </summary>
+        // The buttons list (array, but you get it).
         private readonly string[] BUTTONS =
         {
-            "Switch To Last Scene",
+            "Switch Scenes",
             "Toggle UI",
-            "Toggle Inspector Debug Mode",
+            "Toggle Inspector Debug",
         };
 
         private void OnGUI()
@@ -41,8 +36,8 @@ namespace Super_Toolbelt.Editor
             for (int i = 0; i < buttonsCount; i++)
             {
                 // Add a button with dynamic size
-                // TODO: Add check for icon path
                 GUI.enabled = IsButtonInteractive(i);
+                
                 if (GUILayout.Button(BUTTONS[i], GUILayout.Width(buttonWidth), GUILayout.Height(position.height)))
                 {
                     int buttonIndex = i;
