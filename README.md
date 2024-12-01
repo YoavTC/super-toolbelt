@@ -2,7 +2,7 @@
 
 This is a an editor extension tool I made for myself to use when I work with Unity.
 
-It was made in the span of a weekend, done entirely by me. The tool was made using Unity 6000.0.25f1 LTS.
+It was made in the span of a weekend, done entirely by me. The tool was made using Unity **6000.0.25f1 LTS.** It might not work on older/newer versions!
 
 ![Image 1](https://i.imgur.com/5RU3Fsk.png)
 
