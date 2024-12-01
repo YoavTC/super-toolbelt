@@ -149,7 +149,6 @@ namespace Super_Toolbelt.Editor
         static SuperToolbeltWindow()
         {
             EditorSceneManager.activeSceneChangedInEditMode += OnActiveSceneChanged;
-            Debug.Log("SceneChangeTest initialized");
         }
 
         private static void SwitchToLastScene()
